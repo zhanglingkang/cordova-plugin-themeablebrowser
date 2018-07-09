@@ -1263,6 +1263,27 @@ public class ThemeableBrowser extends CordovaPlugin {
                     Log.e(LOG_TAG, "Error sending sms " + url + ":" + e.toString());
                 }
             }
+            else if (!url.startsWith("http:") && !url.startsWith("https:") && url.matches("^[a-z]*://.*?$")) {
+                if (allowedSchemes == null) {
+                    String allowed = preferences.getString("AllowedSchemes", "");
+                    allowedSchemes = allowed.split(",");
+                }
+                if (allowedSchemes != null) {
+                    for (String scheme : allowedSchemes) {
+                        if (url.startsWith(scheme)) {
+                            try {
+                                JSONObject obj = new JSONObject();
+                                obj.put("type", "customscheme");
+                                obj.put("url", url);
+                                sendUpdate(obj, true);
+                                return true;
+                            } catch (JSONException ex) {
+                                LOG.e(LOG_TAG, "Custom Scheme URI passed in has caused a JSON error.");
+                            }
+                        }
+                    }
+                }
+            }
             return false;
         }
 
