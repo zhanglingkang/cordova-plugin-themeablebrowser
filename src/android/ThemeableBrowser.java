@@ -108,6 +108,7 @@ public class ThemeableBrowser extends CordovaPlugin {
     private WebView inAppWebView;
     private EditText edittext;
     private CallbackContext callbackContext;
+    private String[] allowedSchemes;
 
     /**
      * Executes the request and returns PluginResult.
@@ -1278,7 +1279,7 @@ public class ThemeableBrowser extends CordovaPlugin {
                                 sendUpdate(obj, true);
                                 return true;
                             } catch (JSONException ex) {
-                                LOG.e(LOG_TAG, "Custom Scheme URI passed in has caused a JSON error.");
+                                Log.e(LOG_TAG, "Custom Scheme URI passed in has caused a JSON error.");
                             }
                         }
                     }
