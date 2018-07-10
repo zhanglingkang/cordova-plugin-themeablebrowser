@@ -373,11 +373,8 @@
 
 - (void)injectDeferredObject:(NSString*)source withWrapper:(NSString*)jsWrapper
 {
-    if (!_injectedIframeBridge) {
-        _injectedIframeBridge = YES;
-        // Create an iframe bridge in the new document to communicate with the CDVThemeableBrowserViewController
-        [self.themeableBrowserViewController.webView stringByEvaluatingJavaScriptFromString:@"(function(d){var e = _cdvIframeBridge = d.createElement('iframe');e.style.display='none';d.body.appendChild(e);})(document)"];
-    }
+    
+    [self.inAppBrowserViewController.webView stringByEvaluatingJavaScriptFromString:@"(function(d){_cdvIframeBridge=d.getElementById('_cdvIframeBridge');if(!_cdvIframeBridge) {var e = _cdvIframeBridge = d.createElement('iframe');e.id='_cdvIframeBridge'; e.style.display='none';d.body.appendChild(e);}})(document)"];
 
     if (jsWrapper != nil) {
         NSData* jsonData = [NSJSONSerialization dataWithJSONObject:@[source] options:0 error:nil];
@@ -548,7 +545,6 @@
 
 - (void)webViewDidStartLoad:(UIWebView*)theWebView
 {
-    _injectedIframeBridge = NO;
     _framesOpened++;
 }
 
