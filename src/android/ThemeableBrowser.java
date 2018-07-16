@@ -1328,7 +1328,7 @@ public class ThemeableBrowser extends CordovaPlugin {
             } catch (JSONException ex) {
                 Log.e(LOG_TAG, "URI passed in has caused a JSON error.");
             }
-            progressDialog.show();
+            //progressDialog.show();
         }
 
         public void onPageFinished(WebView view, String url) {
