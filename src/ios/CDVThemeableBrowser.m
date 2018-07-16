@@ -329,10 +329,20 @@
                                    initWithRootViewController:self.themeableBrowserViewController];
     nav.orientationDelegate = self.themeableBrowserViewController;
     nav.navigationBarHidden = YES;
+
+     __weak CDVThemeableBrowser* weakSelf = self;
+
     // Run later to avoid the "took a long time" log message.
     dispatch_async(dispatch_get_main_queue(), ^{
-        if (self.themeableBrowserViewController != nil) {
-            [self.viewController presentViewController:nav animated:animated completion:nil];
+        if (weakSelf.themeableBrowserViewController != nil) {
+            CGRect frame = [[UIScreen mainScreen] bounds];
+            UIWindow *tmpWindow = [[UIWindow alloc] initWithFrame:frame];
+            UIViewController *tmpController = [[UIViewController alloc] init];
+            [tmpWindow setRootViewController:tmpController];
+            [tmpWindow setWindowLevel:UIWindowLevelNormal];
+
+            [tmpWindow makeKeyAndVisible];
+            [tmpController presentViewController:nav animated:YES completion:nil];
         }
     });
 }
@@ -659,6 +669,11 @@
     return self;
 }
 
+// Prevent crashes on closing windows
+-(void)dealloc {
+   self.webView.delegate = nil;
+}
+
 - (void)createViews
 {
     // We create the views in code for primarily for ease of upgrades and not requiring an external .xib to be included
@@ -886,7 +901,7 @@
     self.view.backgroundColor = [CDVThemeableBrowserViewController colorFromRGBA:[self getStringFromDict:_browserOptions.statusbar withKey:kThemeableBrowserPropColor withDefault:@"#ffffffff"]];
     [self.view addSubview:self.toolbar];
     // [self.view addSubview:self.addressLabel];
-    // [self.view addSubview:self.spinner];
+     [self.view addSubview:self.spinner];
 }
 
 /**
