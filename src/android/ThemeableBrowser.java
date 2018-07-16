@@ -19,6 +19,7 @@
 package com.initialxy.cordova.themeablebrowser;
 
 import android.annotation.SuppressLint;
+import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
 import android.content.res.Resources;
@@ -1191,7 +1192,7 @@ public class ThemeableBrowser extends CordovaPlugin {
     public class ThemeableBrowserClient extends WebViewClient {
         PageLoadListener callback;
         CordovaWebView webView;
-
+        ProgressDialog progressDialog;
         /**
          * Constructor.
          *
@@ -1202,6 +1203,9 @@ public class ThemeableBrowser extends CordovaPlugin {
                 PageLoadListener callback) {
             this.webView = webView;
             this.callback = callback;
+            progressDialog = new ProgressDialog(webView.getContext());
+            progressDialog.setCancelable(false);
+            progressDialog.setIndeterminate(true);
         }
 
         /**
@@ -1324,6 +1328,7 @@ public class ThemeableBrowser extends CordovaPlugin {
             } catch (JSONException ex) {
                 Log.e(LOG_TAG, "URI passed in has caused a JSON error.");
             }
+            progressDialog.show();
         }
 
         public void onPageFinished(WebView view, String url) {
@@ -1342,6 +1347,7 @@ public class ThemeableBrowser extends CordovaPlugin {
                 }
             } catch (JSONException ex) {
             }
+            progressDialog.dismiss();
         }
 
         public void onReceivedError(WebView view, int errorCode, String description, String failingUrl) {
@@ -1357,6 +1363,7 @@ public class ThemeableBrowser extends CordovaPlugin {
                 sendUpdate(obj, true, PluginResult.Status.ERROR);
             } catch (JSONException ex) {
             }
+            progressDialog.dismiss();
         }
     }
 
